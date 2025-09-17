@@ -6,7 +6,6 @@ import { setupCounter } from './counter.ts'
     const a= 10,
  c= "aaa";
 
-
 console.log(c,a)
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div>
