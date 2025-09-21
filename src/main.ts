@@ -1,26 +1,19 @@
 import './style.css';
-import typescriptLogo from './typescript.svg';
-import viteLogo from '/vite.svg';
-import { setupCounter } from './counter.ts';
+import { createHeader } from './components/organisms/Header';
+import type { MenuItem } from './interfaces/MenuItem.interface';
 
-const name = 'Nuno';
+const menuItems: MenuItem[] = [
+  { label: 'Início', href: '#' },
+  { label: 'Sobre', href: '#sobre' },
+  { label: 'Serviços', href: '#servicos' },
+  { label: 'Blog', href: '#blog' },
+  { label: 'Contacto', href: '#contacto' },
+];
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>${name}</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      XXXXXXXXXXx
-    </p>
-  </div>
-`;
-
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!);
+const app = document.querySelector<HTMLDivElement>('#app');
+if (app) {
+  app.innerHTML = '';
+  const header = createHeader('Formação', menuItems);
+  app.appendChild(header);
+  // You can append page content after header here if needed
+}
