@@ -11,7 +11,7 @@ export function createMenu(items: MenuItem[]): HTMLElement {
 
   const toggleBtn = document.createElement('button');
   toggleBtn.className = 'menu__toggle';
-  toggleBtn.setAttribute('aria-label', 'Abrir menu');
+  toggleBtn.setAttribute('aria-label', 'Open menu');
   toggleBtn.setAttribute('aria-expanded', 'false');
   toggleBtn.innerHTML =
     '<span class="menu__bar"></span><span class="menu__bar"></span><span class="menu__bar"></span>';

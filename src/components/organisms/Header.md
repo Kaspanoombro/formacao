@@ -1,64 +1,64 @@
-# Organismo: Header
+# Organism: Header
 
-Combina a marca (título) com o componente `Menu` para formar o cabeçalho do site.
+Combines the brand (title) with the `Menu` component to form the site header.
 
-- Ficheiro: `src/components/organisms/Header.ts`
-- Função principal: `createHeader(title: string, items: MenuItem[]): HTMLElement`
+- File: `src/components/organisms/Header.ts`
+- Main function: `createHeader(title: string, items: MenuItem[]): HTMLElement`
 
 ## API
 
-Parâmetros:
+Parameters:
 
-- `title`: Texto do título/branding apresentado no cabeçalho.
-- `items`: Array de `MenuItem` (ver `src/interfaces/MenuItem.interface.ts`) para construir o menu.
+- `title`: Title/branding text displayed in the header.
+- `items`: Array of `MenuItem` (see `src/interfaces/MenuItem.interface.ts`) to build the menu.
 
-Retorna:
+Returns:
 
-- `HTMLElement` (`<header class="site-header">`) com a marca e o menu.
+- `HTMLElement` (`<header class="site-header">`) with the brand and menu.
 
-## Marcação gerada
+## Generated markup
 
 ```html
 <header class="site-header">
   <div class="site-header__brand">
-    <h1 class="site-header__title">Formação</h1>
+    <h1 class="site-header__title">Training</h1>
   </div>
-  <!-- componente Menu aqui -->
+  <!-- Menu component here -->
 </header>
 ```
 
-## Exemplo de utilização
+## Usage example
 
 ```ts
 import { createHeader } from '@/components/organisms/Header';
 import type { MenuItem } from '@/interfaces/MenuItem.interface';
 
 const items: MenuItem[] = [
-  { label: 'Início', href: '#' },
-  { label: 'Sobre', href: '#sobre' },
-  { label: 'Serviços', href: '#servicos' },
+  { label: 'Home', href: '#' },
+  { label: 'About', href: '#about' },
+  { label: 'Services', href: '#services' },
   { label: 'Blog', href: '#blog' },
-  { label: 'Contacto', href: '#contacto' },
+  { label: 'Contact', href: '#contact' },
 ];
 
-const header = createHeader('Formação', items);
+const header = createHeader('Training', items);
 document.body.appendChild(header);
 ```
 
-## Estilos
+## Styles
 
-- Estilização em `src/style.css`:
-  - `.site-header` para o layout do cabeçalho.
-  - `.site-header__title`/`.site-header__brand` para a marca.
-  - O menu herda os estilos definidos para `.menu` e elementos internos.
+- Styling in `src/style.css`:
+  - `.site-header` for header layout.
+  - `.site-header__title`/`.site-header__brand` for branding.
+  - The menu inherits styles defined for `.menu` and internal elements.
 
-## Acessibilidade
+## Accessibility
 
-- Estrutura semântica com `<header>` e `<h1>`.
-- O componente `Menu` interno trata o comportamento do botão e `aria-expanded`.
+- Semantic structure with `<header>` and `<h1>`.
+- The internal `Menu` component handles button behavior and `aria-expanded`.
 
-## Testes
+## Tests
 
-- Testes unitários em `src/components/organisms/Header.test.ts`:
-  - Verifica que o título é renderizado.
-  - Garante que o menu é incluído e que contém 5 itens.
+- Unit tests in `src/components/organisms/Header.test.ts`:
+  - Verifies that the title is rendered.
+  - Ensures that the menu is included and contains 5 items.

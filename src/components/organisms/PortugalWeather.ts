@@ -26,11 +26,11 @@ class PtWeather extends HTMLElement {
 
     const title = document.createElement('h2');
     title.className = 'weather-pt__title';
-    title.textContent = 'Temperatura atual (IPMA)';
+    title.textContent = 'Current temperature (IPMA)';
 
     this.statusEl = document.createElement('div');
     this.statusEl.className = 'weather-pt__status';
-    this.statusEl.textContent = 'A carregar…';
+    this.statusEl.textContent = 'Loading…';
 
     const list = document.createElement('div');
     list.className = 'weather-pt__list';
@@ -59,10 +59,10 @@ class PtWeather extends HTMLElement {
         updateCityTemperature(refs, t);
         if (t != null && isFinite(t)) any = true;
       }
-      this.statusEl.textContent = any ? 'Atualizado agora' : 'Sem dados disponíveis';
+      this.statusEl.textContent = any ? 'Updated now' : 'No data available';
     } catch {
       // IPMA fetch failed - silent handling for production
-      this.statusEl.textContent = 'Falha ao obter dados';
+      this.statusEl.textContent = 'Failed to fetch data';
     }
   }
 }

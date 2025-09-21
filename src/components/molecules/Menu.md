@@ -1,73 +1,73 @@
-# Molécula: Menu
+# Molecule: Menu
 
-Rende um menu de navegação responsivo com botão hambúrguer em ecrãs pequenos.
+Renders a responsive navigation menu with hamburger button on small screens.
 
-- Ficheiro: `src/components/molecules/Menu.ts`
-- Função principal: `createMenu(items: MenuItem[]): HTMLElement`
+- File: `src/components/molecules/Menu.ts`
+- Main function: `createMenu(items: MenuItem[]): HTMLElement`
 
 ## API
 
-Parâmetros:
+Parameters:
 
-- `items`: Array de `MenuItem` (ver `src/interfaces/MenuItem.interface.ts`), cada item com:
-  - `label`: texto apresentado.
-  - `href`: destino do link.
+- `items`: Array of `MenuItem` (see `src/interfaces/MenuItem.interface.ts`), each item with:
+  - `label`: displayed text.
+  - `href`: link destination.
 
-Retorna:
+Returns:
 
-- `HTMLElement` (`<nav class="menu">`) contendo o botão de toggle e a lista de itens.
+- `HTMLElement` (`<nav class="menu">`) containing the toggle button and item list.
 
-## Marcação gerada
+## Generated markup
 
-Estrutura base inserida no DOM:
+Base structure inserted into the DOM:
 
 ```html
 <nav class="menu">
-  <button class="menu__toggle" aria-label="Abrir menu" aria-expanded="false">
+  <button class="menu__toggle" aria-label="Open menu" aria-expanded="false">
     <span class="menu__bar"></span><span class="menu__bar"></span><span class="menu__bar"></span>
   </button>
   <ul class="menu__list">
-    <li class="menu__item"><a class="menu__link" href="#">Início</a></li>
-    <!-- ... restantes itens -->
+    <li class="menu__item"><a class="menu__link" href="#">Home</a></li>
+    <!-- ... remaining items -->
   </ul>
 </nav>
 ```
 
-## Exemplo de utilização
+## Usage example
 
 ```ts
 import { createMenu } from '@/components/molecules/Menu';
 import type { MenuItem } from '@/interfaces/MenuItem.interface';
 
 const items: MenuItem[] = [
-  { label: 'Início', href: '#' },
-  { label: 'Sobre', href: '#sobre' },
-  { label: 'Serviços', href: '#servicos' },
+  { label: 'Home', href: '#' },
+  { label: 'About', href: '#about' },
+  { label: 'Services', href: '#services' },
   { label: 'Blog', href: '#blog' },
-  { label: 'Contacto', href: '#contacto' },
+  { label: 'Contact', href: '#contact' },
 ];
 
 const menu = createMenu(items);
 document.body.appendChild(menu);
 ```
 
-## Acessibilidade
+## Accessibility
 
-- O botão de abrir/fechar controla o estado através de `aria-expanded` e da classe `is-open` no
+- The open/close button controls state through `aria-expanded` and the `is-open` class on the
   `<nav>`.
-- Use rótulos de link descritivos.
-- A navegação é semântica: `<nav>` + `<ul>/<li>/<a>`.
+- Use descriptive link labels.
+- Navigation is semantic: `<nav>` + `<ul>/<li>/<a>`.
 
-## Comportamento responsivo
+## Responsive behavior
 
-- Desktop: lista horizontal (`.menu__list`) visível.
+- Desktop: horizontal list (`.menu__list`) visible.
 - Mobile (`max-width: 768px`):
-  - `.menu__toggle` fica visível.
-  - A lista é escondida por omissão e mostrada verticalmente quando `.menu.is-open` é aplicada.
-- Os estilos estão definidos em `src/style.css`.
+  - `.menu__toggle` becomes visible.
+  - List is hidden by default and shown vertically when `.menu.is-open` is applied.
+- Styles are defined in `src/style.css`.
 
-## Testes
+## Tests
 
-- Testes unitários em `src/components/molecules/Menu.test.ts`:
-  - Verifica a renderização de 5 itens.
-  - Verifica o comportamento de toggle (abrir/fechar) e `aria-expanded`.
+- Unit tests in `src/components/molecules/Menu.test.ts`:
+  - Verifies rendering of 5 items.
+  - Verifies toggle behavior (open/close) and `aria-expanded`.

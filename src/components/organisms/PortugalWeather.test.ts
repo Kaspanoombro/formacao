@@ -44,14 +44,14 @@ describe('Organism: PortugalWeather', () => {
     document.body.appendChild(el);
 
     // Initially shows loading status and placeholders
-    expect(el.querySelector('.weather-pt__status')?.textContent).toContain('A carregar');
+    expect(el.querySelector('.weather-pt__status')?.textContent).toContain('Loading…');
     const values = el.querySelectorAll('.city-temp__value');
     expect(values.length).toBe(3);
 
     // Wait a macrotask for async updates
     await new Promise((r) => setTimeout(r, 0));
 
-    expect(el.querySelector('.weather-pt__status')?.textContent).toContain('Atualizado');
+    expect(el.querySelector('.weather-pt__status')?.textContent).toContain('Updated now');
 
     const texts = Array.from(el.querySelectorAll('.city-temp__value')).map((n) => n.textContent);
     expect(texts).toContain('28 °C');

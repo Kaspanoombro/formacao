@@ -1,54 +1,54 @@
-# Átomo: Link (Web Component)
+# Atom: Link (Web Component)
 
-Componente Web reutilizável para navegação interna e externa. Expõe o elemento personalizado
-`<app-link>`, que renderiza um `<a>` no light DOM para que os estilos globais (ex.: `.menu__link`)
-continuem a aplicar-se.
+Reusable Web Component for internal and external navigation. Exposes the custom element
+`<app-link>`, which renders an `<a>` in the light DOM so that global styles (e.g., `.menu__link`)
+continue to apply.
 
-- Ficheiro: `src/components/atoms/Link.ts`
-- Função principal: `createLink(text: string, href: string, options?: LinkOptions): HTMLElement`
+- File: `src/components/atoms/Link.ts`
+- Main function: `createLink(text: string, href: string, options?: LinkOptions): HTMLElement`
 
 ## API
 
-Parâmetros:
+Parameters:
 
-- `text`: Texto visível do link.
-- `href`: URL ou hash de destino.
-- `options` (opcional) do tipo `LinkOptions` (ver `src/interfaces/LinkOptions.interface.ts`):
-  - `target`: por omissão `_self`. Se `_blank`, o `rel` seguro é aplicado automaticamente.
-  - `rel`: relação do link. Se `target === '_blank'` e não for fornecido, usa
+- `text`: Visible text of the link.
+- `href`: Destination URL or hash.
+- `options` (optional) of type `LinkOptions` (see `src/interfaces/LinkOptions.interface.ts`):
+  - `target`: defaults to `_self`. If `_blank`, secure `rel` is applied automatically.
+  - `rel`: link relationship. If `target === '_blank'` and not provided, uses
     `"noopener noreferrer"`.
-  - `classes`: lista adicional de classes CSS para estilização (aplicadas ao `<a>` interno).
+  - `classes`: additional list of CSS classes for styling (applied to the inner `<a>`).
 
-Atributos do `<app-link>`:
+Attributes of `<app-link>`:
 
-- `href`: destino do link (refletido no `<a>` interno).
-- `target`: alvo do link.
-- `rel`: relação do link (ajustado automaticamente quando `target="_blank"`).
-- `text`: conteúdo textual a apresentar no `<a>` interno.
-- `data-classes`: classes a aplicar ao `<a>` interno (separadas por espaço).
+- `href`: link destination (reflected in the inner `<a>`).
+- `target`: link target.
+- `rel`: link relationship (automatically adjusted when `target="_blank"`).
+- `text`: textual content to display in the inner `<a>`.
+- `data-classes`: classes to apply to the inner `<a>` (space-separated).
 
-Retorna:
+Returns:
 
-- `HTMLElement` (`<app-link>`) pronto a ser inserido no DOM.
+- `HTMLElement` (`<app-link>`) ready to be inserted into the DOM.
 
-## Marcação gerada
+## Generated markup
 
-Exemplo de resultado no DOM:
+Example of DOM result:
 
 ```html
 <app-link href="https://example.com/docs" target="_blank" data-classes="menu__link">
   <a href="https://example.com/docs" target="_blank" rel="noopener noreferrer" class="menu__link"
-    >Documentação</a
+    >Documentation</a
   >
 </app-link>
 ```
 
-## Exemplo de utilização
+## Usage example
 
 ```ts
 import { createLink } from '@/components/atoms/Link';
 
-const link = createLink('Documentação', 'https://example.com/docs', {
+const link = createLink('Documentation', 'https://example.com/docs', {
   target: '_blank',
   classes: ['menu__link'],
 });
@@ -56,19 +56,19 @@ const link = createLink('Documentação', 'https://example.com/docs', {
 document.body.appendChild(link);
 ```
 
-## Acessibilidade
+## Accessibility
 
-- Mantém um `<a>` semântico no DOM, garantindo comportamento e acessibilidade nativos.
-- Quando `target="_blank"` é usado, aplica `rel="noopener noreferrer"` por segurança.
-- Garanta que o texto do link descreve o destino (evitar “clique aqui”).
+- Maintains a semantic `<a>` in the DOM, ensuring native behavior and accessibility.
+- When `target="_blank"` is used, applies `rel="noopener noreferrer"` for security.
+- Ensure that the link text describes the destination (avoid "click here").
 
-## Estilos
+## Styles
 
-- As classes passadas em `options.classes` (ou via `data-classes`) são aplicadas ao `<a>` interno,
-  permitindo reutilizar estilos existentes como `.menu__link`.
+- Classes passed in `options.classes` (or via `data-classes`) are applied to the inner `<a>`,
+  allowing reuse of existing styles like `.menu__link`.
 
-## Testes
+## Tests
 
-- Testes unitários em `src/components/atoms/Link.test.ts`:
-  - Verifica que o elemento personalizado (`APP-LINK`) é criado e que o `<a>` interno recebe `href`,
-    `target`, `rel` e classes adicionais.
+- Unit tests in `src/components/atoms/Link.test.ts`:
+  - Verifies that the custom element (`APP-LINK`) is created and that the inner `<a>` receives
+    `href`, `target`, `rel` and additional classes.
