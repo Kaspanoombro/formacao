@@ -1,5 +1,6 @@
 import './style.css';
 import { createHeader } from './components/organisms/Header';
+import './components/organisms/PortugalWeather';
 import type { MenuItem } from './interfaces/MenuItem.interface';
 
 const menuItems: MenuItem[] = [
@@ -15,5 +16,8 @@ if (app) {
   app.innerHTML = '';
   const header = createHeader('Formação', menuItems);
   app.appendChild(header);
-  // You can append page content after header here if needed
+
+  // Use the Web Component for the weather organism
+  const weather = document.createElement('pt-weather');
+  app.appendChild(weather);
 }
