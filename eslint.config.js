@@ -1,11 +1,24 @@
-import { defineConfig } from "eslint/config";
+import js from '@eslint/js';
+import tseslint from 'typescript-eslint';
 
-export default defineConfig([
+export default tseslint.config(
   {
-    files: ["**/*.js", "**/*.cjs", "**/*.mjs"],
+    ignores: ['dist/', 'node_modules/'],
+  },
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
+  {
+    files: ['**/*.{ts,tsx}'],
     rules: {
-      "prefer-const": "warn",
-      "no-constant-binary-expression": "error",
+      // example project rules
+      'no-console': 'warn',
     },
   },
-]);
+  {
+    files: ['**/*.{js,cjs,mjs}'],
+    rules: {
+      'prefer-const': 'warn',
+      'no-constant-binary-expression': 'error',
+    },
+  },
+);
