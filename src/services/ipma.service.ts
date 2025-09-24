@@ -3,23 +3,14 @@
  * NOTE: Network may fail in tests; tests should mock fetch. This code is defensive and
  * parses the daily forecast payload, using today's tMax (fallback to tMin) as display value.
  */
+import type {
+  CityName,
+  CityTemperature,
+  IPMACities,
+  IPMACityForecast,
+} from '../interfaces/ipma.interface.ts';
 
-export type CityName = 'Lisboa' | 'Porto' | 'Coimbra';
 
-export interface CityTemperature {
-  city: CityName;
-  temperature: number | null; // in Celsius (we use forecast tMax by default)
-  observedAt?: string; // ISO (we store forecastDate from payload when available)
-}
-
-interface ForecastEntry {
-  forecastDate?: string;
-  tMax?: number;
-  tMin?: number;
-  tmax?: number;
-  tmin?: number;
-  idWeatherType?: number;
-}
 
 // Static mapping per issue description to avoid extra network calls.
 const CITY_IDS: Record<CityName, number> = {
@@ -37,7 +28,7 @@ function toNumber(n: unknown): number | null {
   return null;
 }
 
-function pickTodayForecast(forecast: ForecastEntry[]): ForecastEntry | null {
+function pickTodayForecast(forecast: IPMACityForecast[]): IPMACityForecast | null {
   if (!Array.isArray(forecast)) return null;
   // Prefer the first entry (usually today). If there are dates, match today.
   const today = new Date().toISOString().slice(0, 10);
@@ -47,12 +38,12 @@ function pickTodayForecast(forecast: ForecastEntry[]): ForecastEntry | null {
   return byDate ?? forecast[0] ?? null;
 }
 
-async function fetchCityForecast(localId: number) {
+async function fetchCityForecast(localId: number): Promise<IPMACities> {
   const res = await fetch(
     `https://api.ipma.pt/open-data/forecast/meteorology/cities/daily/${localId}.json`,
     { cache: 'no-store' as RequestCache });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return res.json();
+  return await res.json();
 }
 
 export async function fetchCurrentTemps(
@@ -70,11 +61,11 @@ export async function fetchCurrentTemps(
       const id = CITY_IDS[city];
       if (!id) return;
       try {
-        const data: object  = await fetchCityForecast(id);
-        const fc = pickTodayForecast(data?.data ?? data?.forecast ?? []);
-        // Support both IPMA key styles: tMax/tMin (camel case) and tmax/tmin (lowercase)
-        const tMax = toNumber(fc?.tMax ?? fc?.tmax);
-        const tMin = toNumber(fc?.tMin ?? fc?.tmin);
+        const data: IPMACities  = await fetchCityForecast(id);
+        const fc = pickTodayForecast(data?.data ?? []);
+        // Support both IPMA key styles: tMax/tMin (camel case) and tMax/tMin (lowercase)
+        const tMax = toNumber(fc?.tMax ?? fc?.tMax);
+        const tMin = toNumber(fc?.tMin ?? fc?.tMin);
         const chosen = tMax ?? tMin ?? null;
         if (chosen != null) {
           result[city] = {
