@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createLink } from './Link';
+import { createLink } from './Link.ts';
 
 describe('Atom: Link (Web Component)', () => {
   it('creates a custom element that renders an anchor with text and href', () => {

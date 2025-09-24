@@ -1,4 +1,4 @@
-import type { LinkOptions } from '../../interfaces/LinkOptions.interface';
+import type { LinkOptions } from '../../../interfaces/LinkOptions.interface.ts';
 
 /**
  * Atom: Link as a Web Component
@@ -37,18 +37,11 @@ class AppLink extends HTMLElement {
       a.removeAttribute('rel');
     }
 
-    const text = this.getAttribute('text') ?? this.textContent ?? '';
-    a.textContent = text;
+    a.textContent = this.getAttribute('text') ?? this.textContent ?? '';
 
     // Apply classes to inner <a> so existing CSS continues to work
     const classes = (this.getAttribute('data-classes') ?? '').trim();
-    if (classes.length) {
-      const cls = classes.split(/\s+/);
-      a.className = '';
-      a.classList.add(...cls);
-    } else {
-      a.className = '';
-    }
+    if (classes.length) a.className = classes;
   }
 
   connectedCallback() {
@@ -67,7 +60,9 @@ if (!customElements.get('app-link')) {
 
 export type { AppLink };
 
-export function createLink(text: string, href: string, options: LinkOptions = {}): HTMLElement {
+export function createLink(
+  text: string,
+  href: string, options: LinkOptions = {}): HTMLElement {
   const el = document.createElement('app-link') as AppLink;
   el.setAttribute('href', href);
   el.setAttribute('text', text);

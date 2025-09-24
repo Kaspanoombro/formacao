@@ -48,8 +48,9 @@ function pickTodayForecast(forecast: ForecastEntry[]): ForecastEntry | null {
 }
 
 async function fetchCityForecast(localId: number) {
-  const url = `https://api.ipma.pt/open-data/forecast/meteorology/cities/daily/${localId}.json`;
-  const res = await fetch(url, { cache: 'no-store' as RequestCache });
+  const res = await fetch(
+    `https://api.ipma.pt/open-data/forecast/meteorology/cities/daily/${localId}.json`,
+    { cache: 'no-store' as RequestCache });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();
 }
@@ -69,7 +70,7 @@ export async function fetchCurrentTemps(
       const id = CITY_IDS[city];
       if (!id) return;
       try {
-        const data = await fetchCityForecast(id);
+        const data: object  = await fetchCityForecast(id);
         const fc = pickTodayForecast(data?.data ?? data?.forecast ?? []);
         // Support both IPMA key styles: tMax/tMin (camel case) and tmax/tmin (lowercase)
         const tMax = toNumber(fc?.tMax ?? fc?.tmax);

@@ -1,4 +1,4 @@
-import { createLink } from '../atoms/Link';
+import { createLink } from '../atoms/Link/Link.ts';
 import type { MenuItem } from '../../interfaces/MenuItem.interface';
 
 /**
