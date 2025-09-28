@@ -1,5 +1,5 @@
-import { createLink } from '../atoms/Link/Link.ts';
-import type { MenuItem } from '../../interfaces/MenuItem.interface';
+import { createLink } from '../../atoms/Link/Link.ts';
+import type { MenuItem } from '../../organisms/Header/MenuItem.interface.ts';
 
 /**
  * Molecule: Menu

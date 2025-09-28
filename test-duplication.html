@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test ChatAI Duplication</title>
+    <style>
+        body {
+            margin: 20px;
+            font-family: Arial, sans-serif;
+        }
+        chat-ai {
+            width: 500px;
+            height: 400px;
+            border: 1px solid #ccc;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test ChatAI Message Duplication</h1>
+    <p>Type a message and submit it. Check if the user message appears duplicated in the log.</p>
+    
+    <chat-ai title="Test Chat" 
+             placeholder="Type your message here..." 
+             submit-button-text="Send"
+             show-timestamps="true">
+    </chat-ai>
+
+    <script type="module">
+        import './src/components/organisms/chatAI/chatAI.ts';
+        
+        // Log messages for debugging
+        const chatAI = document.querySelector('chat-ai');
+        if (chatAI) {
+            chatAI.onMessage = (message) => {
+                console.log('Message handler called with:', message);
+            };
+        }
+    </script>
+</body>
+</html>

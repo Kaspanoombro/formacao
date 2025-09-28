@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { createHeader } from './Header';
-import type { MenuItem } from '../../interfaces/MenuItem.interface';
+import { createHeader } from './Header.ts';
+import type { MenuItem } from './MenuItem.interface.ts';
 
 describe('Organism: Header', () => {
   it('renders a title and includes the menu', () => {

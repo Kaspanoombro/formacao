@@ -1,5 +1,5 @@
-import { createCityTemperature, updateCityTemperature } from '../molecules/CityTemperature';
-import { fetchCurrentTemps, type CityName } from '../../services/ipma.service';
+import { createCityTemperature, updateCityTemperature } from '../../molecules/CityTemperature/CityTemperature.ts';
+import { fetchCurrentTemps, type CityName } from '../../../services/ipma.service.ts';
 
 /**
  * Organism: PortugalWeather as Web Component <pt-weather>

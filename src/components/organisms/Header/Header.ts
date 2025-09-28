@@ -1,5 +1,5 @@
-import { createMenu } from '../molecules/Menu';
-import type { MenuItem } from '../../interfaces/MenuItem.interface';
+import { createMenu } from '../../molecules/Menu/Menu.ts';
+import type { MenuItem } from './MenuItem.interface.ts';
 
 /**
  * Organism: Header

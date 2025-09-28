@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createTemperatureValue, updateTemperatureValue } from './TemperatureValue';
+import { createTemperatureValue, updateTemperatureValue } from './TemperatureValue.ts';
 
 describe('Atom: TemperatureValue', () => {
   it('renders dash when value is null', () => {

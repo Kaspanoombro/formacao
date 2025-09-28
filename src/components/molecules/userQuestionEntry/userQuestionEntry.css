@@ -1,0 +1,91 @@
+/* user-prompt.css */
+.user-prompt {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 600px;
+}
+
+.user-prompt__input-container {
+    flex: 1;
+    min-width: 0; /* Permite que o input encolha */
+}
+
+.user-prompt__button-container {
+    flex-shrink: 0;
+}
+
+.user-prompt__input {
+    width: 100%;
+}
+
+.user-prompt__button {
+    height: auto;
+    min-height: 2.5rem; /* Alinha com o input padrão */
+}
+
+/* Variantes de layout */
+.user-prompt.vertical {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.user-prompt.vertical .user-prompt__button-container {
+    margin-top: 0.5rem;
+}
+
+.user-prompt.compact {
+    gap: 0.25rem;
+}
+
+.user-prompt.compact .user-prompt__button {
+    min-height: 2rem;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+/* Variantes de tamanho */
+.user-prompt.small .user-prompt__button {
+    min-height: 2rem;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.user-prompt.large .user-prompt__button {
+    min-height: 3rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 1.125rem;
+}
+
+/* Estados */
+.user-prompt.loading .user-prompt__button {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.user-prompt.disabled {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Responsivo */
+@media (width <= 768px) {
+    .user-prompt {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    .user-prompt.mobile-horizontal {
+        flex-direction: row;
+        align-items: flex-end;
+    }
+}
+
+/* Tema escuro */
+@media (prefers-color-scheme: dark) {
+    .user-prompt {
+        color-scheme: dark;
+    }
+}

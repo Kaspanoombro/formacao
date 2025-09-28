@@ -1,0 +1,14 @@
+<template id="generic-input-template">
+    <div class="input-wrapper">
+        <label class="input-label" for="input-field">
+            <slot name="label"></slot>
+        </label>
+        <input
+                class="input-field"
+                id="input-field"
+                type="text"
+                autocomplete="off"
+        />
+        <div class="input-error" role="alert" aria-live="polite"></div>
+    </div>
+</template>

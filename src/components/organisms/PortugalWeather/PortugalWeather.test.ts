@@ -1,20 +1,27 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { createPortugalWeather } from './PortugalWeather';
+import { createPortugalWeather } from './PortugalWeather.ts';
 
 // Mock payloads for forecast endpoints per city id
 const makeForecast = (tMax: number, tMin?: number) => ({
+  owner: 'IPMA',
+  country: 'PT',
   dataUpdate: '2025-09-21T12:00:00',
-  forecastDate: '2025-09-21T00:00:00',
-  location: { local: 'X' },
-  forecast: [
+  globalIdLocal: 1110600,
+  data: [
     {
-      forecastDate: '2025-09-21T00:00:00',
-      tMin: tMin ?? Math.max(0, tMax - 8),
-      tMax: tMax,
+      forecastDate: '2025-09-21',
+      tMin: String(tMin ?? Math.max(0, tMax - 8)),
+      tMax: String(tMax),
       idWeatherType: 1,
+      precipitaProb: '0',
+      predWindDir: 'N',
+      classWindSpeed: 1,
+      longitude: '-9.1286',
+      latitude: '38.7660',
     },
   ],
 });
+
 
 describe('Organism: PortugalWeather', () => {
   beforeEach(() => {

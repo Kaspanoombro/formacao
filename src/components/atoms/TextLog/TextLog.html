@@ -1,0 +1,28 @@
+<!-- text-log.html -->
+<template id="text-log-template">
+    <div class="text-log">
+        <div class="text-log__header">
+            <h3 class="text-log__title">
+                <slot name="title">Chat log</slot>
+            </h3>
+            <div class="text-log__controls">
+                <button class="text-log__clear-btn" type="button" title="Limpar log">
+                    <span class="text-log__clear-icon">🗑️</span>
+                </button>
+                <button class="text-log__scroll-btn" type="button" title="Ir para o fim">
+                    <span class="text-log__scroll-icon">⬇️</span>
+                </button>
+            </div>
+        </div>
+        <div class="text-log__content" role="log" aria-live="polite" aria-label="Log de mensagens">
+            <div class="text-log__messages"></div>
+            <div class="text-log__empty-state">
+                <p class="text-log__empty-text">Empty</p>
+            </div>
+        </div>
+        <div class="text-log__footer">
+            <span class="text-log__count">0 mensagens</span>
+            <span class="text-log__status"></span>
+        </div>
+    </div>
+</template>

@@ -2,7 +2,7 @@ import type { LinkOptions } from '../../../interfaces/LinkOptions.interface.ts';
 
 /**
  * Atom: Link as a Web Component
- * Exposes a custom element <app-link> that renders an <a> element in the light DOM
+ * Exposes a custom element <app-link> that renders <a> element in the light DOM
  * so that global styles (e.g., .menu__link) can still apply.
  */
 class AppLink extends HTMLElement {
@@ -39,7 +39,7 @@ class AppLink extends HTMLElement {
 
     a.textContent = this.getAttribute('text') ?? this.textContent ?? '';
 
-    // Apply classes to inner <a> so existing CSS continues to work
+    // Apply classes to inner <a> so the existing CSS continues to work
     const classes = (this.getAttribute('data-classes') ?? '').trim();
     if (classes.length) a.className = classes;
   }
@@ -53,7 +53,7 @@ class AppLink extends HTMLElement {
   }
 }
 
-// Define the custom element once
+// Define the custom element at once
 if (!customElements.get('app-link')) {
   customElements.define('app-link', AppLink);
 }

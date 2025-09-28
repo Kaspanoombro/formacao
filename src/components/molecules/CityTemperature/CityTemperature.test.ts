@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createCityTemperature, updateCityTemperature } from './CityTemperature';
+import { createCityTemperature, updateCityTemperature } from './CityTemperature.ts';
 
 describe('Molecule: CityTemperature', () => {
   it('renders city name and placeholder', () => {

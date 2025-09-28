@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createMenu } from './Menu';
-import type { MenuItem } from '../../interfaces/MenuItem.interface';
+import { createMenu } from './Menu.ts';
+import type { MenuItem } from '../../organisms/Header/MenuItem.interface.ts';
 
 describe('Molecule: Menu', () => {
   let items: MenuItem[];

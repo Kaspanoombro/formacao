@@ -1,4 +1,4 @@
-import { createTemperatureValue, updateTemperatureValue } from '../atoms/TemperatureValue';
+import { createTemperatureValue, updateTemperatureValue } from '../../atoms/TemperatureValue/TemperatureValue.ts';
 
 /**
  * Molecule: CityTemperature as Web Component <city-temp>
