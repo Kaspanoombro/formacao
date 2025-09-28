@@ -23,6 +23,36 @@ export type CityName = 'Lisboa' | 'Porto' | 'Coimbra';
 
 export interface CityTemperature {
   city: CityName;
-  temperature: number | null; // in Celsius (we use forecast tMax by default)
-  observedAt?: string; // ISO (we store forecastDate from payload when available)
+  temperature: number | null; // in Celsius (actual observed temperature from weather station)
+  observedAt?: string; // ISO (observation time from weather station)
+}
+
+// New interfaces for observation API
+export interface IPMAObservationResponse {
+  type: "FeatureCollection";
+  features: IPMAObservationFeature[];
+}
+
+export interface IPMAObservationFeature {
+  geometry: {
+    type: "Point";
+    coordinates: [number, number]; // [longitude, latitude]
+  };
+  type: "Feature";
+  properties: IPMAObservationProperties;
+}
+
+export interface IPMAObservationProperties {
+  intensidadeVentoKM: number;
+  temperatura: number; // actual temperature in °C
+  idEstacao: number; // station ID
+  pressao: number;
+  humidade: number; // -99.0 means no data
+  localEstacao: string; // station name
+  precAcumulada: number;
+  idDireccVento: number;
+  radiacao: number; // -99.0 means no data
+  time: string; // ISO datetime of observation
+  intensidadeVento: number;
+  descDirVento: string;
 }

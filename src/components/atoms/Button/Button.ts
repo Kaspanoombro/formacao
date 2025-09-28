@@ -1,17 +1,10 @@
-import type { ButtonOptions } from './Button.interface.ts';
 import htmlTemplate from './button.html?raw';
 import cssStyles from './button.css?raw';
 
-/**
- * Custom Button Web Component <custom-button>
- * Uses imported HTML template and CSS styling
- */
-export function createButton(text: string, onClick: () => void, className?: string): HTMLElement {
-  const element = document.createElement('custom-button');
-  element.setAttribute('text', text);
-  element.setAttribute('class', className || '');
-  (element as any).onClick = onClick;
-  return element;
+interface ButtonOptions {
+  text: string;
+  onClick: () => void;
+  className?: string;
 }
 
 class CustomButton extends HTMLElement {
@@ -104,7 +97,7 @@ class CustomButton extends HTMLElement {
     }
   }
 
-  attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+  attributeChangedCallback(name: string, _oldValue: string, newValue: string) {
     if (!this.buttonEl) return;
 
     switch (name) {

@@ -1,22 +1,24 @@
 /**
- * IPMA Service: fetch forecast temperatures for Portuguese cities using official endpoints.
+ * IPMA Service: fetch current temperatures for Portuguese cities using observation endpoints.
  * NOTE: Network may fail in tests; tests should mock fetch. This code is defensive and
- * parses the daily forecast payload, using today's tMax (fallback to tMin) as display value.
+ * parses the observation GeoJSON payload, using actual temperature readings from weather stations.
  */
 import type {
   CityName,
   CityTemperature,
-  IPMACities,
-  IPMACityForecast,
+  IPMAObservationResponse,
+  IPMAObservationFeature,
 } from '../interfaces/ipma.interface.ts';
 
+export type { CityName } from '../interfaces/ipma.interface.ts';
 
 
-// Static mapping per issue description to avoid extra network calls.
-const CITY_IDS: Record<CityName, number> = {
-  Lisboa: 1110600,
-  Porto: 1010500,
-  Coimbra: 1030300,
+
+// Approximate coordinates for Portuguese cities to find closest weather stations
+const CITY_COORDINATES: Record<CityName, [number, number]> = {
+  Lisboa: [38.7223, -9.1393], // [latitude, longitude]
+  Porto: [41.1579, -8.6291],
+  Coimbra: [40.2033, -8.4103],
 };
 
 function toNumber(n: unknown): number | null {
@@ -28,19 +30,44 @@ function toNumber(n: unknown): number | null {
   return null;
 }
 
-function pickTodayForecast(forecast: IPMACityForecast[]): IPMACityForecast | null {
-  if (!Array.isArray(forecast)) return null;
-  // Prefer the first entry (usually today). If there are dates, match today.
-  const today = new Date().toISOString().slice(0, 10);
-  const byDate = forecast.find(
-    (f) => typeof f?.forecastDate === 'string' && f.forecastDate.startsWith(today),
-  );
-  return byDate ?? forecast[0] ?? null;
+// Calculate distance between two coordinates using Haversine formula
+function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371; // Earth's radius in kilometers
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
 }
 
-async function fetchCityForecast(localId: number): Promise<IPMACities> {
+function findClosestStation(city: CityName, observations: IPMAObservationFeature[]): IPMAObservationFeature | null {
+  const [cityLat, cityLon] = CITY_COORDINATES[city];
+  let closestStation: IPMAObservationFeature | null = null;
+  let minDistance = Infinity;
+
+  for (const station of observations) {
+    const [stationLon, stationLat] = station.geometry.coordinates;
+    // Skip stations with invalid temperature data
+    if (station.properties.temperatura === -99.0 || !isFinite(station.properties.temperatura)) {
+      continue;
+    }
+    
+    const distance = calculateDistance(cityLat, cityLon, stationLat, stationLon);
+    if (distance < minDistance) {
+      minDistance = distance;
+      closestStation = station;
+    }
+  }
+
+  return closestStation;
+}
+
+async function fetchObservations(): Promise<IPMAObservationResponse> {
   const res = await fetch(
-    `https://api.ipma.pt/open-data/forecast/meteorology/cities/daily/${localId}.json`,
+    'https://api.ipma.pt/open-data/observation/meteorology/stations/obs-surface.geojson',
     { cache: 'no-store' as RequestCache });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return await res.json();
@@ -56,31 +83,29 @@ export async function fetchCurrentTemps(
   };
 
   try {
-    // Fetch all city forecasts in parallel
-    const tasks = cities.map(async (city) => {
-      const id = CITY_IDS[city];
-      if (!id) return;
+    // Fetch all weather station observations
+    const observations = await fetchObservations();
+    
+    // Find closest station for each city and extract temperature
+    for (const city of cities) {
       try {
-        const data: IPMACities  = await fetchCityForecast(id);
-        const fc = pickTodayForecast(data?.data ?? []);
-        // Support both IPMA key styles: tMax/tMin (camel case) and tMax/tMin (lowercase)
-        const tMax = toNumber(fc?.tMax ?? fc?.tMax);
-        const tMin = toNumber(fc?.tMin ?? fc?.tMin);
-        const chosen = tMax ?? tMin ?? null;
-        if (chosen != null) {
-          result[city] = {
-            city,
-            temperature: chosen,
-            observedAt: fc?.forecastDate || new Date().toISOString(),
-          } as CityTemperature;
+        const closestStation = findClosestStation(city, observations.features);
+        if (closestStation) {
+          const temperature = toNumber(closestStation.properties.temperatura);
+          if (temperature !== null && temperature !== -99.0) {
+            result[city] = {
+              city,
+              temperature,
+              observedAt: closestStation.properties.time,
+            } as CityTemperature;
+          }
         }
       } catch {
-        // Keep nulls for this city
+        // Keep null for this city if processing fails
       }
-    });
-    await Promise.all(tasks);
+    }
   } catch {
-    // Silent fail; keep nulls
+    // Silent fail; keep nulls for all cities
   }
 
   return result;

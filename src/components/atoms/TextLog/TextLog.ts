@@ -85,8 +85,7 @@ class TextLog extends HTMLElement {
       this.appendChild(content);
       this.updateFromAttributes();
 
-    } catch (error) {
-      console.error('Failed to load text-log template:', error);
+    } catch {
       this.renderFallback();
     }
   }

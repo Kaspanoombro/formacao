@@ -165,8 +165,7 @@ export class ChatAI extends HTMLElement {
       } else {
         this.addMessage('ai', `Error: ${response.error || 'Failed to get AI response'}`);
       }
-    } catch (error) {
-      console.error('Error calling LLM:', error);
+    } catch {
       this.addMessage('ai', 'Sorry, I encountered an error while processing your message.');
     }
   }
