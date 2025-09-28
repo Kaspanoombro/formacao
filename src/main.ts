@@ -29,7 +29,7 @@ if (app) {
   // Create the AI chat component
   const chatAI = createChatAI({
     title: "AI Assistant",
-    placeholder: "Ask your question...",
+    placeholder: "Ask your question here...",
     submitButtonText: "Send",
     maxHeight: "500px",
     showTimestamps: true,

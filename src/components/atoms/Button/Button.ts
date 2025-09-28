@@ -1,29 +1,72 @@
 import htmlTemplate from './button.html?raw';
 import cssStyles from './button.css?raw';
 
+/**
+ * Configuration options for creating a Button instance
+ */
 interface ButtonOptions {
+  /** The text to display on the button */
   text: string;
+  /** Callback function to execute when the button is clicked */
   onClick: () => void;
+  /** Optional CSS classes to apply to the button */
   className?: string;
 }
 
+/**
+ * Custom web component that creates a reusable button element.
+ * Extends HTMLElement to provide a custom button with template loading,
+ * event handling, and attribute observation capabilities.
+ * 
+ * @example
+ * ```HTML
+ * <custom-button text="Click me" disabled></custom-button>
+ * ```
+ * 
+ * @example
+ * ```JavaScript
+ * const button = document.createElement('custom-button');
+ * button.setAttribute('text', 'Submit');
+ * button.onClick = () => console.log('Button clicked!');
+ * document.body.appendChild(button);
+ * ```
+ */
 class CustomButton extends HTMLElement {
+  /** The internal button element */
   private buttonEl!: HTMLButtonElement;
+  /** The click event handler function */
   private clickHandler?: () => void;
 
+  /**
+   * Defines which attributes should trigger attributeChangedCallback when modified
+   * @returns Array of attribute names to observe
+   */
   static get observedAttributes() {
     return ['text', 'disabled'];
   }
 
+  /**
+   * Lifecycle method called when the element is connected to the DOM
+   * Loads the template and attaches event listeners
+   */
   connectedCallback() {
     this.loadTemplate();
     this.attachEventListeners();
   }
 
+  /**
+   * Lifecycle method called when the element is disconnected from the DOM
+   * Removes event listeners to prevent memory leaks
+   */
   disconnectedCallback() {
     this.removeEventListeners();
   }
 
+  /**
+   * Loads the button template from an HTML file and applies styling
+   * Falls back to inline HTML if template loading fails
+   * @private
+   */
   private loadTemplate() {
     try {
       // Inject CSS styles if not already injected
@@ -47,10 +90,10 @@ class CustomButton extends HTMLElement {
       const content = template.content.cloneNode(true) as DocumentFragment;
       this.buttonEl = content.querySelector('.custom-button') as HTMLButtonElement;
 
-      // Set initial text
+      // Set the initial text
       this.buttonEl.textContent = this.getAttribute('text') || '';
 
-      // Set initial disabled state
+      // Set the initially disabled state
       this.buttonEl.disabled = this.hasAttribute('disabled');
 
       // Apply additional classes
@@ -60,12 +103,15 @@ class CustomButton extends HTMLElement {
       }
 
       this.appendChild(content);
-    } catch (error) {
-      console.error('Failed to load custom-button template:', error);
+    } catch {
       this.renderFallback();
     }
   }
 
+  /**
+   * Creates a fallback button element when template loading fails
+   * @private
+   */
   private renderFallback() {
     this.innerHTML = `
       <button class="custom-button" type="button">
@@ -75,7 +121,7 @@ class CustomButton extends HTMLElement {
     
     this.buttonEl = this.querySelector('.custom-button') as HTMLButtonElement;
     
-    // Set initial disabled state
+    // Set the initially disabled state
     this.buttonEl.disabled = this.hasAttribute('disabled');
     
     // Apply additional classes
@@ -85,18 +131,33 @@ class CustomButton extends HTMLElement {
     }
   }
 
+  /**
+   * Attaches click event listener to the button element
+   * @private
+   */
   private attachEventListeners() {
     if (this.buttonEl && this.clickHandler) {
       this.buttonEl.addEventListener('click', this.clickHandler);
     }
   }
 
+  /**
+   * Removes click event listener from the button element
+   * @private
+   */
   private removeEventListeners() {
     if (this.buttonEl && this.clickHandler) {
       this.buttonEl.removeEventListener('click', this.clickHandler);
     }
   }
 
+  /**
+   * Called when observed attributes change
+   * Updates button text and disabled state based on attribute changes
+   * @param name - The name of the changed attribute
+   * @param _oldValue - The previous value (unused)
+   * @param newValue - The new attribute value
+   */
   attributeChangedCallback(name: string, _oldValue: string, newValue: string) {
     if (!this.buttonEl) return;
 
@@ -111,7 +172,13 @@ class CustomButton extends HTMLElement {
   }
 
   /**
-   * Set the click handler function
+   * Sets the click handler function for the button
+   * Automatically removes any previous handler and attaches the new one
+   * @param handler - The function to call when the button is clicked
+   * @example
+   * ```JavaScript
+   * button.onClick = () => console.log('Button clicked!');
+   * ```
    */
   set onClick(handler: () => void) {
     if (this.clickHandler && this.buttonEl) {
@@ -126,21 +193,24 @@ class CustomButton extends HTMLElement {
   }
 
   /**
-   * Get the button element
+   * Gets the underlying HTMLButtonElement
+   * @returns The internal button element
    */
   getButtonElement(): HTMLButtonElement {
     return this.buttonEl;
   }
 
   /**
-   * Set button text
+   * Sets the button text by updating the 'text' attribute
+   * @param text - The new text to display on the button
    */
   setText(text: string): void {
     this.setAttribute('text', text);
   }
 
   /**
-   * Set disabled state
+   * Sets the disabled state of the button
+   * @param disabled - Whether the button should be disabled
    */
   setDisabled(disabled: boolean): void {
     if (disabled) {
@@ -158,10 +228,29 @@ if (!customElements.get('custom-button')) {
 
 /**
  * Button class for backwards compatibility and direct usage
+ * Provides a convenient wrapper around the CustomButton web component
+ * 
+ * @example
+ * ```javascript
+ * import { Button } from './Button.ts';
+ * 
+ * const myButton = new Button({
+ *   text: 'Click Me',
+ *   onClick: () => alert('Button clicked!'),
+ *   className: 'my-custom-class'
+ * });
+ * 
+ * myButton.appendTo(document.body);
+ * ```
  */
 export class Button {
-  private element: CustomButton;
+  /** The underlying CustomButton web component */
+  private readonly element: CustomButton;
 
+  /**
+   * Creates a new Button instance
+   * @param options - Configuration options for the button
+   */
   constructor(options: ButtonOptions) {
     this.element = document.createElement('custom-button') as CustomButton;
     this.element.setAttribute('text', options.text);
@@ -172,22 +261,41 @@ export class Button {
     }
   }
 
+  /**
+   * Gets the underlying HTML element
+   * @returns The CustomButton element
+   */
   getElement(): HTMLElement {
     return this.element;
   }
 
+  /**
+   * Appends the button to a parent element
+   * @param parent - The parent element to append to
+   */
   appendTo(parent: HTMLElement): void {
     parent.appendChild(this.element);
   }
 
+  /**
+   * Sets the disabled state of the button
+   * @param disabled - Whether the button should be disabled
+   */
   setDisabled(disabled: boolean): void {
     this.element.setDisabled(disabled);
   }
 
+  /**
+   * Sets the button text
+   * @param text - The new text to display
+   */
   setText(text: string): void {
     this.element.setText(text);
   }
 
+  /**
+   * Removes the button from the DOM
+   */
   remove(): void {
     this.element.remove();
   }

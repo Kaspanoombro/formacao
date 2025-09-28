@@ -6,15 +6,61 @@ import { callLLM } from '../../../services/callLLM.ts';
 import htmlTemplate from './chatAI.html?raw';
 import cssStyles from './chatAI.css?raw';
 
+/**
+ * Configuration options for creating a ChatAI component instance
+ * Defines the customization parameters available when creating a chat interface
+ * 
+ * @interface ChatAIOptions
+ */
 export interface ChatAIOptions {
+  /** The title displayed at the top of the chat interface */
   title?: string;
+  /** Placeholder text for the input field */
   placeholder?: string;
+  /** Text displayed on the submit button */
   submitButtonText?: string;
+  /** Maximum height of the chat container (CSS value) */
   maxHeight?: string;
+  /** Whether to show timestamps for each message */
   showTimestamps?: boolean;
+  /** Callback function called when a user sends a message */
   onMessage?: (message: string) => void;
 }
 
+/**
+ * Factory function to create a ChatAI component instance
+ * Creates and configures a chat-ai custom element with the specified options,
+ * providing an interactive AI chat interface with LLM integration
+ * 
+ * @param options - Configuration options for the chat component
+ * @returns A configured ChatAI custom element
+ * 
+ * @example
+ * ```javascript
+ * import { createChatAI } from './chatAI.ts';
+ * 
+ * // Create with custom options
+ * const chatAI = createChatAI({
+ *   title: 'AI Assistant',
+ *   placeholder: 'Type your question here...',
+ *   submitButtonText: 'Send',
+ *   maxHeight: '500px',
+ *   showTimestamps: true,
+ *   onMessage: (message) => {
+ *     console.log('User sent:', message);
+ *   }
+ * });
+ * 
+ * document.body.appendChild(chatAI);
+ * ```
+ * 
+ * @example
+ * ```javascript
+ * // Create with default options
+ * const simpleChat = createChatAI();
+ * document.getElementById('chat-container').appendChild(simpleChat);
+ * ```
+ */
 export function createChatAI(options: ChatAIOptions = {}) {
   const chatAI = document.createElement('chat-ai') as ChatAI;
   
@@ -30,13 +76,49 @@ export function createChatAI(options: ChatAIOptions = {}) {
   return chatAI;
 }
 
+/**
+ * Custom web component that provides an interactive AI chat interface
+ * Extends HTMLElement to create a complete chat experience with LLM integration,
+ * message history, and customizable appearance and behavior
+ * 
+ * @example
+ * ```html
+ * <!-- Basic HTML usage -->
+ * <chat-ai title="AI Assistant" placeholder="Ask me anything..."></chat-ai>
+ * ```
+ * 
+ * @example
+ * ```javascript
+ * // Programmatic usage
+ * const chatAI = document.createElement('chat-ai');
+ * chatAI.setAttribute('title', 'My AI Helper');
+ * chatAI.setAttribute('max-height', '600px');
+ * chatAI.setAttribute('show-timestamps', 'true');
+ * 
+ * // Set up message handler
+ * chatAI.onMessage = (message) => {
+ *   console.log('User message:', message);
+ * };
+ * 
+ * document.body.appendChild(chatAI);
+ * ```
+ */
 export class ChatAI extends HTMLElement {
+  /** Reference to the text log component for displaying messages */
   private textLogEl: TextLogElement | null = null;
+  /** Reference to the user prompt component for input handling */
   private userPromptEl: UserPromptElement | null = null;
+  /** Reference to the main container element */
   private containerEl: HTMLElement | null = null;
+  /** Reference to the title element */
   private titleEl: HTMLElement | null = null;
+  /** Optional callback function for handling user messages */
   private messageHandler: ((message: string) => void) | null = null;
 
+  /**
+   * Defines which attributes should trigger attributeChangedCallback when modified
+   * @returns Array of attribute names to observe
+   */
   static get observedAttributes() {
     return [
       'title',
@@ -105,7 +187,7 @@ export class ChatAI extends HTMLElement {
 
     // Setup user prompt event handler
     this.userPromptEl.buttonOnClick = (inputValue: string) => {
-      this.handleUserMessage(inputValue);
+      this.handleUserMessage(inputValue).then(() => {});
     };
 
     // Note: Removed duplicate user-submit event listener to prevent message duplication
@@ -176,10 +258,22 @@ export class ChatAI extends HTMLElement {
   }
 
   // Public API
+  
+  /**
+   * Sets the message handler callback function
+   * Called whenever a user sends a message through the chat interface
+   * @param handler - Function to handle user messages
+   */
   set onMessage(handler: (message: string) => void) {
     this.messageHandler = handler;
   }
 
+  /**
+   * Adds a message to the chat log
+   * @param type - The type of message ('user', 'ai', or 'system')
+   * @param text - The message content
+   * @param timestamp - Optional timestamp (defaults to current time)
+   */
   addMessage(type: 'user' | 'ai' | 'system', text: string, timestamp?: Date) {
     if (!this.textLogEl) return;
 
@@ -192,28 +286,45 @@ export class ChatAI extends HTMLElement {
     this.textLogEl.addEntry(logEntry);
   }
 
+  /**
+   * Clears all messages from the chat log
+   */
   clearChat() {
     if (this.textLogEl) {
       this.textLogEl.clear();
     }
   }
 
+  /**
+   * Focuses the input field for user interaction
+   */
   focus() {
     if (this.userPromptEl) {
       this.userPromptEl.focus();
     }
   }
 
+  /**
+   * Scrolls the chat log to the bottom
+   */
   scrollToBottom() {
     if (this.textLogEl) {
       this.textLogEl.scrollToBottom();
     }
   }
 
+  /**
+   * Exports the current chat log entries
+   * @returns Array of log entries
+   */
   exportChatLog() {
     return this.textLogEl?.exportLog() || [];
   }
 
+  /**
+   * Imports chat log entries into the chat
+   * @param entries - Array of log entries to import
+   */
   importChatLog(entries: LogEntry[]) {
     if (this.textLogEl) {
       this.textLogEl.importLog(entries);

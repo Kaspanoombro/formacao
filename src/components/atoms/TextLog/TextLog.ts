@@ -438,7 +438,7 @@ if (!customElements.get('text-log')) {
  * TextLog class for backwards compatibility and direct usage
  */
 export class TextLogClass {
-  private element: TextLog;
+  private readonly element: TextLog;
 
   constructor(options: TextLogOptions) {
     this.element = createTextLog(options) as TextLog;

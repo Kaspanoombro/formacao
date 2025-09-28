@@ -2,24 +2,68 @@ import { createCityTemperature, updateCityTemperature } from '../../molecules/Ci
 import { fetchCurrentTemps, type CityName } from '../../../services/ipma.service.ts';
 
 /**
- * Organism: PortugalWeather as Web Component <pt-weather>
- * Displays current temperatures for Lisboa, Porto and Coimbra using IPMA data.
+ * Factory function to create a PortugalWeather web component instance
+ * Creates and returns a custom element that displays current temperatures
+ * for Portuguese cities (Lisboa, Porto, Coimbra) using IPMA weather data
+ * 
+ * @returns A custom HTML element instance of the pt-weather component
+ * 
+ * @example
+ * ```javascript
+ * import { createPortugalWeather } from './PortugalWeather.ts';
+ * 
+ * // Create and append to DOM
+ * const weatherWidget = createPortugalWeather();
+ * document.body.appendChild(weatherWidget);
+ * 
+ * // The component will automatically load and display temperature data
+ * ```
  */
 export function createPortugalWeather(): HTMLElement {
-  // Backwards compatibility: return the custom element instance
+  // Backward compatibility: return the custom element instance
   return document.createElement('pt-weather');
 }
 
+/**
+ * Custom web component that displays current weather temperatures for Portuguese cities
+ * Extends HTMLElement to provide a weather widget that fetches and displays
+ * real-time temperature data from IPMA for Lisboa, Porto, and Coimbra
+ * 
+ * @example
+ * ```html
+ * <!-- Use directly in HTML -->
+ * <pt-weather></pt-weather>
+ * ```
+ * 
+ * @example
+ * ```javascript
+ * // Create programmatically
+ * const weather = document.createElement('pt-weather');
+ * document.body.appendChild(weather);
+ * ```
+ */
 class PtWeather extends HTMLElement {
+  /** The status display element showing loading/update information */
   private statusEl!: HTMLElement;
+  /** Array of supported Portuguese cities */
   private cities: CityName[] = ['Lisboa', 'Porto', 'Coimbra'];
+  /** Map storing references to city temperature components */
   private cityRefs = new Map<CityName, ReturnType<typeof createCityTemperature>>();
 
+  /**
+   * Lifecycle method called when the element is connected to the DOM
+   * Initializes the component by rendering the UI and fetching initial data
+   */
   connectedCallback() {
     this.render();
-    this.refresh();
+    this.refresh().then(() => {});
   }
 
+  /**
+   * Renders the component's HTML structure and creates city temperature components
+   * Creates the main weather widget layout with title, status, and city temperature list
+   * @private
+   */
   private render() {
     const section = document.createElement('section');
     section.className = 'weather-pt';
@@ -49,6 +93,19 @@ class PtWeather extends HTMLElement {
     this.replaceChildren(section);
   }
 
+  /**
+   * Fetches fresh temperature data from IPMA and updates the display
+   * Retrieves current temperatures for all supported cities and updates
+   * the corresponding city temperature components with the new data
+   * 
+   * @returns Promise that resolves when the refresh is complete
+   * 
+   * @example
+   * ```javascript
+   * const weatherWidget = document.querySelector('pt-weather');
+   * await weatherWidget.refresh(); // Manually refresh data
+   * ```
+   */
   async refresh() {
     try {
       const data = await fetchCurrentTemps(this.cities);

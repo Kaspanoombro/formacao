@@ -1,14 +1,62 @@
-// UserPrompt.ts
+/**
+ * User Question Entry Component (UserPrompt)
+ * A molecule-level component that combines an input field and submit button
+ * to create a user-friendly interface for collecting text input with validation
+ * and customizable behavior
+ */
 import type { InputElement, ButtonElement } from './userQuestionEntry.interface.ts';
 import htmlTemplate from './userQuestionEntry.html?raw';
 import cssStyles from './userQuestionEntry.css?raw';
 
+/**
+ * Custom web component for user input with integrated validation and submission
+ * Extends HTMLElement to provide a complete input solution with button integration,
+ * validation support, and flexible layout options
+ * 
+ * @example
+ * ```html
+ * <!-- Basic usage -->
+ * <user-prompt button-text="Send" input-placeholder="Enter your question..."></user-prompt>
+ * 
+ * <!-- With validation -->
+ * <user-prompt 
+ *   input-placeholder="Enter email" 
+ *   input-pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+ *   validate-before-submit="true">
+ * </user-prompt>
+ * 
+ * <!-- Vertical layout -->
+ * <user-prompt layout="vertical" size="large"></user-prompt>
+ * ```
+ * 
+ * @example
+ * ```javascript
+ * const userPrompt = document.createElement('user-prompt');
+ * userPrompt.setAttribute('button-text', 'Submit');
+ * userPrompt.setAttribute('input-placeholder', 'Type here...');
+ * 
+ * // Set up click handler
+ * userPrompt.buttonOnClick = (inputValue) => {
+ *   console.log('User entered:', inputValue);
+ * };
+ * 
+ * document.body.appendChild(userPrompt);
+ * ```
+ */
 class UserPrompt extends HTMLElement {
+  /** Reference to the input element */
   private inputEl!: HTMLElement;
+  /** Reference to the button element */
   private buttonEl!: HTMLElement;
+  /** Reference to the container element */
   private containerEl!: HTMLDivElement;
+  /** Optional callback function for button click events */
   private buttonClickHandler?: (inputValue: string) => void;
 
+  /**
+   * Defines which attributes should trigger attributeChangedCallback when modified
+   * @returns Array of attribute names to observe
+   */
   static get observedAttributes() {
     return [
       'button-text', 'input-placeholder', 'input-pattern', 'input-label',

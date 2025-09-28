@@ -1,19 +1,56 @@
 import OpenAI from 'openai';
 
+/**
+ * Configuration options for calling the LLM service
+ */
 interface CallLLMOptions {
+  /** The question or prompt to send to the LLM */
   question: string;
+  /** Optional image URL for multimodal requests */
   imageUrl?: string;
 }
 
+/**
+ * Response object returned by the LLM service
+ */
 interface CallLLMResponse {
+  /** The response content from the LLM */
   content: string;
+  /** Whether the request was successful */
   success: boolean;
+  /** Error message if the request failed */
   error?: string;
 }
 
+/**
+ * Service class for interacting with Large Language Models via OpenRouter API
+ * Handles environment configuration, API calls, and error management
+ * 
+ * @example
+ * ```javascript
+ * const service = new LLMService();
+ * const response = await service.callLLM({
+ *   question: "What is the capital of Portugal?",
+ *   imageUrl: "https://example.com/image.jpg" // optional
+ * });
+ * 
+ * if (response.success) {
+ *   console.log(response.content);
+ * } else {
+ *   console.error(response.error);
+ * }
+ * ```
+ */
 class LLMService {
+  /** The OpenAI client instance configured for OpenRouter */
   private openai: OpenAI;
 
+  /**
+   * Initializes the LLM service with environment configuration
+   * Sets up the OpenAI client with OpenRouter API credentials
+   * 
+   * @throws {Error} When VITE_OPENROUTER_API_KEY is not defined
+   */
   constructor() {
     // Handle both Vite (import.meta.env) and Node.js (process.env) environments
     const apiKey = typeof import.meta !== 'undefined' && import.meta.env 
@@ -39,6 +76,27 @@ class LLMService {
     });
   }
 
+  /**
+   * Sends a request to the LLM and returns the response
+   * Supports both text-only and multimodal (text + image) requests
+   * 
+   * @param options - The request options containing question and optional image
+   * @returns Promise that resolves to the LLM response
+   * 
+   * @example
+   * ```javascript
+   * // Text-only request
+   * const response = await service.callLLM({
+   *   question: "Explain quantum computing"
+   * });
+   * 
+   * // Multimodal request with image
+   * const response = await service.callLLM({
+   *   question: "What do you see in this image?",
+   *   imageUrl: "https://example.com/photo.jpg"
+   * });
+   * ```
+   */
   async callLLM(options: CallLLMOptions): Promise<CallLLMResponse> {
     try {
       const modelName = (typeof import.meta !== 'undefined' && import.meta.env 
@@ -93,7 +151,35 @@ class LLMService {
 // Create and export a singleton instance
 const llmService = new LLMService();
 
-// Export the main function for easy use
+/**
+ * Convenience function that uses the singleton LLM service instance
+ * This is the main export for simple usage throughout the application
+ * 
+ * @param options - The request options containing question and optional image
+ * @returns Promise that resolves to the LLM response
+ * 
+ * @example
+ * ```javascript
+ * import { callLLM } from './callLLM.ts';
+ * 
+ * // Simple usage
+ * const response = await callLLM({
+ *   question: "What is artificial intelligence?"
+ * });
+ * 
+ * if (response.success) {
+ *   console.log('AI Response:', response.content);
+ * } else {
+ *   console.error('Error:', response.error);
+ * }
+ * 
+ * // With image analysis
+ * const imageResponse = await callLLM({
+ *   question: "Describe this image in detail",
+ *   imageUrl: "https://example.com/image.png"
+ * });
+ * ```
+ */
 export const callLLM = (options: CallLLMOptions): Promise<CallLLMResponse> => {
   return llmService.callLLM(options);
 };

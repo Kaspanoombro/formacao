@@ -3,8 +3,29 @@ import htmlTemplate from './input.html?raw';
 import cssStyles from './input.css?raw';
 
 /**
- * Generic Input Web Component <generic-input>
+ * Factory function to create a generic input element with the specified options
  * Uses imported HTML template and CSS styling with validation
+ * 
+ * @param options - Configuration options for the input element
+ * @returns A configured generic-input HTML element
+ * 
+ * @example
+ * ```javascript
+ * import { createGenericInput } from './Input.ts';
+ * 
+ * const input = createGenericInput({
+ *   type: 'email',
+ *   placeholder: 'Enter your email',
+ *   label: 'Email Address',
+ *   required: true,
+ *   pattern: '[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$',
+ *   onChange: (value, isValid) => {
+ *     console.log('Input changed:', value, 'Valid:', isValid);
+ *   }
+ * });
+ * 
+ * document.body.appendChild(input);
+ * ```
  */
 export function createGenericInput(options: InputOptions): HTMLElement {
   const element = document.createElement('generic-input');
@@ -25,13 +46,44 @@ export function createGenericInput(options: InputOptions): HTMLElement {
   return element;
 }
 
+/**
+ * Custom web component that creates a comprehensive input field with validation,
+ * styling, and event handling capabilities. Extends HTMLElement to provide
+ * a flexible input solution with template loading and attribute observation.
+ * 
+ * @example
+ * ```html
+ * <!-- Basic usage -->
+ * <generic-input type="text" placeholder="Enter text" label="Name"></generic-input>
+ * 
+ * <!-- With validation -->
+ * <generic-input 
+ *   type="email" 
+ *   pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+ *   required
+ *   label="Email Address">
+ * </generic-input>
+ * 
+ * <!-- Different sizes and variants -->
+ * <generic-input size="large" variant="outlined" label="Large Input"></generic-input>
+ * ```
+ */
 class GenericInput extends HTMLElement {
+  /** The internal input element */
   private inputEl!: HTMLInputElement;
+  /** The label element associated with the input */
   private labelEl!: HTMLLabelElement;
+  /** The error display element */
   private errorEl!: HTMLDivElement;
+  /** The wrapper container element */
   private wrapperEl!: HTMLDivElement;
+  /** The change event handler function */
   private changeHandler?: (value: string, isValid: boolean) => void;
 
+  /**
+   * Defines which attributes should trigger attributeChangedCallback when modified
+   * @returns Array of attribute names to observe
+   */
   static get observedAttributes() {
     return [
       'pattern', 'placeholder', 'label', 'required', 'disabled',
@@ -39,15 +91,28 @@ class GenericInput extends HTMLElement {
     ];
   }
 
+  /**
+   * Lifecycle method called when the element is connected to the DOM
+   * Loads the template and attaches event listeners
+   */
   connectedCallback() {
     this.loadTemplate();
     this.attachEventListeners();
   }
 
+  /**
+   * Lifecycle method called when the element is disconnected from the DOM
+   * Removes event listeners to prevent memory leaks
+   */
   disconnectedCallback() {
     this.removeEventListeners();
   }
 
+  /**
+   * Loads the input template from HTML file and applies styling
+   * Falls back to inline HTML if template loading fails
+   * @private
+   */
   private loadTemplate() {
     try {
       // Inject CSS styles if not already injected
@@ -108,15 +173,9 @@ class GenericInput extends HTMLElement {
     const placeholder = this.getAttribute('placeholder');
     if (placeholder) this.inputEl.placeholder = placeholder;
 
-    const type = this.getAttribute('type') || 'text';
-    this.inputEl.type = type;
-
-    const required = this.hasAttribute('required');
-    this.inputEl.required = required;
-
-    const disabled = this.hasAttribute('disabled');
-    this.inputEl.disabled = disabled;
-
+    this.inputEl.type = this.getAttribute('type') || 'text';
+    this.inputEl.required = this.hasAttribute('required');
+    this.inputEl.disabled = this.hasAttribute('disabled');
     const value = this.getAttribute('value');
     if (value !== null) this.inputEl.value = value;
 
