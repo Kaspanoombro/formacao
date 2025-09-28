@@ -18,13 +18,27 @@ export interface ChatAIOptions {
   /** Placeholder text for the input field */
   placeholder?: string;
   /** Text displayed on the submit button */
-  submitButtonText?: string;
-  /** Maximum height of the chat container (CSS value) */
-  maxHeight?: string;
+  submitText?: string;
+  /** Loading text shown while processing */
+  loadingText?: string;
+  /** Maximum number of entries in chat log */
+  maxEntries?: number;
+  /** Whether to auto-scroll to bottom */
+  autoScroll?: boolean;
   /** Whether to show timestamps for each message */
-  showTimestamps?: boolean;
+  showTimestamp?: boolean;
+  /** Whether to allow clearing chat history */
+  allowClear?: boolean;
+  /** System prompt for AI model */
+  systemPrompt?: string;
+  /** AI model name to use */
+  model?: string;
+  /** Temperature setting for AI model */
+  temperature?: number;
   /** Callback function called when a user sends a message */
   onMessage?: (message: string) => void;
+  /** Initial messages to populate the chat */
+  initialMessages?: LogEntry[];
 }
 
 /**
@@ -66,11 +80,25 @@ export function createChatAI(options: ChatAIOptions = {}) {
   
   if (options.title) chatAI.setAttribute('title', options.title);
   if (options.placeholder) chatAI.setAttribute('placeholder', options.placeholder);
-  if (options.submitButtonText) chatAI.setAttribute('submit-button-text', options.submitButtonText);
-  if (options.maxHeight) chatAI.setAttribute('max-height', options.maxHeight);
-  if (options.showTimestamps) chatAI.setAttribute('show-timestamps', 'true');
+  if (options.submitText) chatAI.setAttribute('submit-text', options.submitText);
+  if (options.loadingText) chatAI.setAttribute('loading-text', options.loadingText);
+  if (options.maxEntries) chatAI.setAttribute('max-entries', options.maxEntries.toString());
+  if (options.autoScroll) chatAI.setAttribute('auto-scroll', 'true');
+  if (options.showTimestamp) chatAI.setAttribute('show-timestamp', 'true');
+  if (options.allowClear) chatAI.setAttribute('allow-clear', 'true');
+  if (options.systemPrompt) chatAI.setAttribute('system-prompt', options.systemPrompt);
+  if (options.model) chatAI.setAttribute('model', options.model);
+  if (options.temperature !== undefined) chatAI.setAttribute('temperature', options.temperature.toString());
   if (options.onMessage) {
     chatAI.onMessage = options.onMessage;
+  }
+  if (options.initialMessages) {
+    // Handle initial messages after the component is connected
+    setTimeout(() => {
+      options.initialMessages?.forEach(message => {
+        chatAI.addMessage(message.type, message.text, message.timestamp);
+      });
+    }, 0);
   }
   
   return chatAI;
@@ -121,11 +149,9 @@ export class ChatAI extends HTMLElement {
    */
   static get observedAttributes() {
     return [
-      'title',
-      'placeholder', 
-      'submit-button-text',
-      'max-height',
-      'show-timestamps'
+      'title', 'placeholder', 'submit-text', 'loading-text',
+      'max-entries', 'auto-scroll', 'show-timestamp', 
+      'allow-clear', 'system-prompt', 'model', 'temperature'
     ];
   }
 
@@ -266,6 +292,14 @@ export class ChatAI extends HTMLElement {
    */
   set onMessage(handler: (message: string) => void) {
     this.messageHandler = handler;
+  }
+
+  /**
+   * Gets the current message handler callback function
+   * @returns The current message handler or null if not set
+   */
+  get onMessage() {
+    return this.messageHandler;
   }
 
   /**
