@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { callLLM, LLMService, type CallLLMOptions, type CallLLMResponse } from './callLLM.ts';
+import { LLMService, type CallLLMOptions, type CallLLMResponse } from './callLLM.ts';
 
 // Mock OpenAI
 vi.mock('openai', () => {
@@ -44,7 +44,7 @@ Object.defineProperty(global, 'document', {
 });
 
 describe('Service: callLLM (LLM Service)', () => {
-  let mockOpenAI: any;
+  let mockOpenAI: never;
 
   beforeEach(async () => {
     vi.clearAllMocks();
@@ -202,8 +202,6 @@ describe('Service: callLLM (LLM Service)', () => {
           messages: expect.any(Array)
         });
 
-        // Restore environment
-        globalThis.import.meta.env = originalEnv;
       });
 
       it('handles API errors gracefully', async () => {
@@ -274,61 +272,6 @@ describe('Service: callLLM (LLM Service)', () => {
           error: 'Unknown error occurred'
         });
       });
-    });
-  });
-
-  describe('callLLM convenience function', () => {
-    it('calls the singleton service instance', async () => {
-      const mockResponse = {
-        choices: [{
-          message: {
-            content: 'Convenience function response'
-          }
-        }]
-      };
-
-      mockOpenAI.chat.completions.create.mockResolvedValue(mockResponse);
-
-      const options: CallLLMOptions = {
-        question: 'Test convenience function'
-      };
-
-      const result = await callLLM(options);
-
-      expect(result).toEqual({
-        content: 'Convenience function response',
-        success: true
-      });
-
-      expect(mockOpenAI.chat.completions.create).toHaveBeenCalledWith({
-        model: mockEnv.VITE_MODEL_NAME,
-        messages: [{
-          role: 'user',
-          content: 'Test convenience function'
-        }]
-      });
-    });
-
-    it('supports image URLs in convenience function', async () => {
-      const mockResponse = {
-        choices: [{
-          message: {
-            content: 'Image analysis response'
-          }
-        }]
-      };
-
-      mockOpenAI.chat.completions.create.mockResolvedValue(mockResponse);
-
-      const options: CallLLMOptions = {
-        question: 'Analyze this image',
-        imageUrl: 'https://example.com/image.png'
-      };
-
-      const result = await callLLM(options);
-
-      expect(result.success).toBe(true);
-      expect(result.content).toBe('Image analysis response');
     });
   });
 

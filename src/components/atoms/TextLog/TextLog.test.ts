@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { createTextLog } from './TextLog.ts';
 import type { LogEntry, TextLogOptions } from './TextLog.interface.ts';
 

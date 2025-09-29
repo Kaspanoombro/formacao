@@ -69,7 +69,7 @@ export interface ChatAIOptions {
  * ```
  * 
  * @example
- * ```javascript
+ * ```JavaScript
  * // Create with default options
  * const simpleChat = createChatAI();
  * document.getElementById('chat-container').appendChild(simpleChat);
@@ -110,7 +110,7 @@ export function createChatAI(options: ChatAIOptions = {}) {
  * message history, and customizable appearance and behavior
  * 
  * @example
- * ```html
+ * ```HTML
  * <!-- Basic HTML usage -->
  * <chat-ai title="AI Assistant" placeholder="Ask me anything..."></chat-ai>
  * ```
@@ -255,7 +255,7 @@ export class ChatAI extends HTMLElement {
   }
 
   private async handleUserMessage(message: string) {
-    if (!message.trim()) return;
+    //if (!message.trim()) return;
 
     // Add a user message to the log
     this.addMessage('user', message);

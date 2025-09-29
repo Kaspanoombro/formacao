@@ -1,33 +1,12 @@
 import OpenAI from 'openai';
-
-/**
- * Configuration options for calling the LLM service
- */
-interface CallLLMOptions {
-  /** The question or prompt to send to the LLM */
-  question: string;
-  /** Optional image URL for multimodal requests */
-  imageUrl?: string;
-}
-
-/**
- * Response object returned by the LLM service
- */
-interface CallLLMResponse {
-  /** The response content from the LLM */
-  content: string;
-  /** Whether the request was successful */
-  success: boolean;
-  /** Error message if the request failed */
-  error?: string;
-}
+import type { CallLLMOptions, CallLLMResponse } from './callLLM.interface';
 
 /**
  * Service class for interacting with Large Language Models via OpenRouter API
  * Handles environment configuration, API calls, and error management
  * 
  * @example
- * ```javascript
+ * ```JavaScript
  * const service = new LLMService();
  * const response = await service.callLLM({
  *   question: "What is the capital of Portugal?",

@@ -4,10 +4,7 @@ import {
   type CityName
 } from './ipma.service.ts';
 import type {
-  CityTemperature,
   IPMAObservationResponse,
-  IPMAObservationFeature,
-  IPMAObservationProperties
 } from '../interfaces/ipma.interface.ts';
 
 // Mock fetch globally
@@ -19,10 +16,6 @@ describe('Service: IPMA (Weather Service)', () => {
   });
 
   describe('Utility Functions', () => {
-    // Import individual functions for testing
-    let toNumber: (n: any) => number;
-    let calculateDistance: (lat1: number, lon1: number, lat2: number, lon2: number) => number;
-    let findClosestStation: (city: any, observations: IPMAObservationFeature[]) => IPMAObservationFeature | null;
 
     beforeEach(async () => {
       // We need to import the internal functions for testing

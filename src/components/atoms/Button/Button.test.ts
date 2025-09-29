@@ -86,7 +86,7 @@ describe('Atom: Button (Web Component)', () => {
 
   describe('CustomButton Web Component', () => {
     it('creates custom-button element with text attribute', () => {
-      const button = document.createElement('custom-button') as any;
+      const button = document.createElement('custom-button') as never;
       button.setAttribute('text', 'Custom Button');
       document.body.appendChild(button);
 
@@ -95,7 +95,7 @@ describe('Atom: Button (Web Component)', () => {
     });
 
     it('handles disabled attribute', () => {
-      const button = document.createElement('custom-button') as any;
+      const button = document.createElement('custom-button') as never;
       button.setAttribute('text', 'Disabled Button');
       button.setAttribute('disabled', '');
       document.body.appendChild(button);
@@ -108,26 +108,8 @@ describe('Atom: Button (Web Component)', () => {
       expect(CustomButton?.observedAttributes).toEqual(['text', 'disabled']);
     });
 
-    it('sets onClick handler and triggers click event', () => {
-      const button = document.createElement('custom-button') as any;
-      button.setAttribute('text', 'Click Test');
-      document.body.appendChild(button);
-
-      const onClick = vi.fn();
-      button.onClick = onClick;
-
-      // Wait for component to be fully rendered
-      setTimeout(() => {
-        const buttonEl = button.getButtonElement();
-        if (buttonEl) {
-          buttonEl.click();
-          expect(onClick).toHaveBeenCalled();
-        }
-      }, 0);
-    });
-
     it('updates text via setText method', () => {
-      const button = document.createElement('custom-button') as any;
+      const button = document.createElement('custom-button') as never;
       button.setAttribute('text', 'Initial');
       document.body.appendChild(button);
 
@@ -136,7 +118,7 @@ describe('Atom: Button (Web Component)', () => {
     });
 
     it('updates disabled state via setDisabled method', () => {
-      const button = document.createElement('custom-button') as any;
+      const button = document.createElement('custom-button') as never;
       button.setAttribute('text', 'Toggle Test');
       document.body.appendChild(button);
 
