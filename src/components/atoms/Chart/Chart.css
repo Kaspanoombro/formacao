@@ -1,0 +1,13 @@
+/* chart.css */
+.chart-container {
+    width: 100%;
+    padding: 1rem;
+    background-color: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+}
+
+.chart-wrapper {
+    width: 100%;
+    min-height: 300px;
+}

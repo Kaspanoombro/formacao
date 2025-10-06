@@ -77,9 +77,12 @@ describe('Molecule: UserQuestionEntry (User Prompt Component)', () => {
       expect(userPrompt.hasAttribute('loading')).toBe(true);
     });
 
-    it('gets and sets input value', () => {
+    it('gets and sets input value', async () => {
       const userPrompt = document.createElement('user-prompt') as never;
       document.body.appendChild(userPrompt);
+
+      // Wait for component to be fully initialized
+      await new Promise(resolve => setTimeout(resolve, 0));
 
       // Test setter
       userPrompt.inputValue = 'Test question';
@@ -141,6 +144,7 @@ describe('Molecule: UserQuestionEntry (User Prompt Component)', () => {
 
     it('prevents empty submissions when required', () => {
       const userPrompt = document.createElement('user-prompt') as never;
+      userPrompt.setAttribute('validate-before-submit', '');
       userPrompt.setAttribute('required', '');
       document.body.appendChild(userPrompt);
 

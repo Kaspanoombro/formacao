@@ -44,8 +44,12 @@ import cssStyles from './userQuestionEntry.css?raw';
  * ```
  */
 class UserPrompt extends HTMLElement {
-  /** Reference to the input element */
+  /** Reference to the question input element */
   private inputEl!: HTMLElement;
+  /** Reference to the profile input element */
+  private profileInputEl!: HTMLElement;
+  /** Reference to the form element */
+  private formEl!: HTMLFormElement;
   /** Reference to the button element */
   private buttonEl!: HTMLElement;
   /** Reference to the container element */
@@ -121,7 +125,14 @@ class UserPrompt extends HTMLElement {
 
   private setupComponents() {
     // Find the placeholder elements
-    this.inputEl = this.querySelector('generic-input') as HTMLElement;
+    this.formEl = this.querySelector('form') as HTMLFormElement;
+    this.formEl.addEventListener('submit', (event) => {
+      event.preventDefault(); // cancel form submit
+      this.handleSubmit();
+    });
+    const placeholderEls = this.querySelectorAll('generic-input');
+    this.inputEl = placeholderEls[0] as HTMLElement;
+    this.profileInputEl = placeholderEls[1] as HTMLElement;
     this.buttonEl = this.querySelector('custom-button') as HTMLElement;
 
     if (!this.inputEl || !this.buttonEl) return;
@@ -141,6 +152,13 @@ class UserPrompt extends HTMLElement {
 
     const inputLabel = this.getAttribute('input-label');
     if (inputLabel) this.inputEl.setAttribute('label', inputLabel);
+
+    // Handle required attribute
+    if (this.hasAttribute('required')) {
+      this.inputEl.setAttribute('required', '');
+    } else {
+      this.inputEl.removeAttribute('required');
+    }
 
     // Update button attributes
     const buttonText = this.getAttribute('button-text') || 'Enviar';
@@ -181,9 +199,17 @@ class UserPrompt extends HTMLElement {
     if (!this.inputEl || !this.buttonEl) return;
 
     // Button click handler
-    (this.buttonEl as ButtonElement).onClick = () => {
-      this.handleSubmit();
-    };
+//    (this.buttonEl as ButtonElement).onClick = () => {
+//      this.handleSubmit();
+//    };
+
+    // Form submit handler
+    if (this.formEl) {
+      this.formEl.addEventListener('submit', (event) => {
+        event.preventDefault();
+        this.handleSubmit();
+      });
+    }
 
     // Enter key handler
     if (this.hasAttribute('submit-on-enter')) {
@@ -210,20 +236,39 @@ class UserPrompt extends HTMLElement {
   }
 
   private handleSubmit() {
-    if (!this.inputEl || !this.buttonClickHandler) return;
+    if (!this.inputEl) return;
 
-    const inputValue = (this.inputEl as InputElement).value || '',
-     isValid = (this.inputEl as InputElement).isValid;
+    // Check if input is valid - for custom components, use their validation or check required manually
+    let isValid = true;
+    if (this.hasAttribute('validate-before-submit')) {
+      const inputElement = this.inputEl as InputElement;
+      const inputValue = inputElement.value || '';
+      
+      // If required and empty, it's invalid
+      if (this.hasAttribute('required') && inputValue.trim() === '') {
+        isValid = false;
+      }
+      
+      // Use custom validation if available
+      if (inputElement.isValid !== undefined) {
+        isValid = isValid && inputElement.isValid;
+      }
+    }
 
     // Validate before submitting if required
     if (this.hasAttribute('validate-before-submit') && !isValid) return;
+
+    const
+      profileValue = (this.profileInputEl as InputElement)?.value || '',
+      message = `Definition of your role behaviour ${profileValue.length ? profileValue : 'computer engineer coder'} - User Question: ${(this.inputEl as InputElement).value}`;
 
     // Show loading state
     this.setLoading(true);
 
     try {
       // Call the handler
-      this.buttonClickHandler(inputValue);
+      if (!this.buttonClickHandler) throw new Error('Button click handler not set');
+      this.buttonClickHandler(message);
 
       // Clear input if required
       if (this.hasAttribute('clear-on-submit')) {
@@ -232,7 +277,7 @@ class UserPrompt extends HTMLElement {
 
       // Dispatch custom event
       this.dispatchEvent(new CustomEvent('user-submit', {
-        detail: { value: inputValue, isValid },
+        detail: { value: message, isValid },
         bubbles: true
       }));
 
@@ -245,7 +290,17 @@ class UserPrompt extends HTMLElement {
   private updateSubmitButton(isValid: boolean) {
     if (!this.buttonEl || !this.hasAttribute('validate-before-submit')) return;
 
-    (this.buttonEl as ButtonElement).setDisabled(!isValid);
+    const buttonElement = this.buttonEl as ButtonElement;
+    if (buttonElement.setDisabled) {
+      buttonElement.setDisabled(!isValid);
+    } else {
+      // Fallback to standard DOM attribute
+      if (!isValid) {
+        this.buttonEl.setAttribute('disabled', '');
+      } else {
+        this.buttonEl.removeAttribute('disabled');
+      }
+    }
   }
 
   private setLoading(loading: boolean) {
@@ -253,11 +308,21 @@ class UserPrompt extends HTMLElement {
 
     if (loading) {
       this.containerEl.classList.add('loading');
-      (this.buttonEl as ButtonElement).setDisabled(true);
+      const buttonElement = this.buttonEl as ButtonElement;
+      if (buttonElement?.setDisabled) {
+        buttonElement.setDisabled(true);
+      } else if (this.buttonEl) {
+        this.buttonEl.setAttribute('disabled', '');
+      }
     } else {
       this.containerEl.classList.remove('loading');
       if (!this.hasAttribute('disabled')) {
-        (this.buttonEl as ButtonElement).setDisabled(false);
+        const buttonElement = this.buttonEl as ButtonElement;
+        if (buttonElement?.setDisabled) {
+          buttonElement.setDisabled(false);
+        } else if (this.buttonEl) {
+          this.buttonEl.removeAttribute('disabled');
+        }
       }
     }
   }

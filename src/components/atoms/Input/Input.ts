@@ -175,6 +175,7 @@ class GenericInput extends HTMLElement {
 
     this.inputEl.type = this.getAttribute('type') || 'text';
     this.inputEl.required = this.hasAttribute('required');
+    this.inputEl.name = this.getAttribute('name') || '';
     this.inputEl.disabled = this.hasAttribute('disabled');
     const value = this.getAttribute('value');
     if (value !== null) this.inputEl.value = value;

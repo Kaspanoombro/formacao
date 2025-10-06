@@ -2,7 +2,7 @@ export interface LogEntry {
   question?: string;
   answer?: string;
   text?: string;
-  type?: 'question' | 'answer' | 'info' | 'error' | 'user' | 'ai' | 'system';
+  type?: 'question' | 'answer' | 'info' | 'error' | 'user' | 'AI' | 'system';
   timestamp?: Date;
   id?: string;
 }

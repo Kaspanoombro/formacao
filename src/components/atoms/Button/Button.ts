@@ -1,17 +1,7 @@
 import htmlTemplate from './button.html?raw';
 import cssStyles from './button.css?raw';
+import type { ButtonOptions } from './Button.interface.ts';
 
-/**
- * Configuration options for creating a Button instance
- */
-interface ButtonOptions {
-  /** The text to display on the button */
-  text: string;
-  /** Callback function to execute when the button is clicked */
-  onClick: () => void;
-  /** Optional CSS classes to apply to the button */
-  className?: string;
-}
 
 /**
  * Custom web component that creates a reusable button element.

@@ -8,7 +8,7 @@ import cssStyles from './chatAI.css?raw';
 
 /**
  * Configuration options for creating a ChatAI component instance
- * Defines the customization parameters available when creating a chat interface
+ * Define the customization parameters available when creating a chat interface
  * 
  * @interface ChatAIOptions
  */
@@ -21,15 +21,15 @@ export interface ChatAIOptions {
   submitText?: string;
   /** Loading text shown while processing */
   loadingText?: string;
-  /** Maximum number of entries in chat log */
+  /** Maximum number of entries in the chat log */
   maxEntries?: number;
-  /** Whether to auto-scroll to bottom */
+  /** Whether to auto-scroll to the bottom */
   autoScroll?: boolean;
   /** Whether to show timestamps for each message */
   showTimestamp?: boolean;
   /** Whether to allow clearing chat history */
   allowClear?: boolean;
-  /** System prompt for AI model */
+  /** System prompt for an AI model */
   systemPrompt?: string;
   /** AI model name to use */
   model?: string;
@@ -50,7 +50,7 @@ export interface ChatAIOptions {
  * @returns A configured ChatAI custom element
  * 
  * @example
- * ```javascript
+ * ```JavaScript
  * import { createChatAI } from './chatAI.ts';
  * 
  * // Create with custom options
@@ -116,7 +116,7 @@ export function createChatAI(options: ChatAIOptions = {}) {
  * ```
  * 
  * @example
- * ```javascript
+ * ```JavaScript
  * // Programmatic usage
  * const chatAI = document.createElement('chat-ai');
  * chatAI.setAttribute('title', 'My AI Helper');
@@ -254,7 +254,7 @@ export class ChatAI extends HTMLElement {
     }
   }
 
-  private async handleUserMessage(message: string) {
+  async handleUserMessage(message: string) {
     //if (!message.trim()) return;
 
     // Add a user message to the log
@@ -267,14 +267,14 @@ export class ChatAI extends HTMLElement {
 
     // Call the actual LLM service
     try {
-      const response = await callLLM({ question: message });
+      const response = await callLLM({ question: message });  //`perfil: ${profile}. Question: ${message}`
       if (response.success) {
-        this.addMessage('ai', response.content);
+        this.addMessage('AI', response.content);
       } else {
-        this.addMessage('ai', `Error: ${response.error || 'Failed to get AI response'}`);
+        this.addMessage('AI', `Error: ${response.error || 'Failed to get AI response'}`);
       }
     } catch {
-      this.addMessage('ai', 'Sorry, I encountered an error while processing your message.');
+      this.addMessage('AI', 'Sorry, I encountered an error while processing your message.');
     }
   }
 
@@ -304,11 +304,12 @@ export class ChatAI extends HTMLElement {
 
   /**
    * Adds a message to the chat log
-   * @param type - The type of message ('user', 'ai', or 'system')
+   * @param type - The type of message ("user" | "AI" | "system" | "question" | "answer" | "info" | "error" | undefined)
    * @param text - The message content
    * @param timestamp - Optional timestamp (defaults to current time)
    */
-  addMessage(type: 'user' | 'ai' | 'system', text: string, timestamp?: Date) {
+  addMessage(type: "user" | "AI" | "system" | "question" | "answer" | "info" | "error" | undefined,
+             text: string| undefined, timestamp?: Date) {
     if (!this.textLogEl) return;
 
     const logEntry: LogEntry = {

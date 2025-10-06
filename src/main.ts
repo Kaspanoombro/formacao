@@ -2,6 +2,7 @@ import './styles/style.css';
 import { createHeader } from './components/organisms/Header/Header.ts';
 import './components/organisms/PortugalWeather/PortugalWeather.ts';
 import type { MenuItem } from './components/organisms/Header/MenuItem.interface.ts';
+import './components/atoms/Chart/Chart.ts';
 import './components/atoms/Button/Button.ts';
 import './components/atoms/Input/Input.ts';
 import './components/atoms/TextLog/TextLog.ts';
@@ -25,6 +26,15 @@ if (app) {
   // Use the Web Component for the weather organism
   const weather = document.createElement('pt-weather');
   app.appendChild(weather);
+  const chart = document.createElement('chart-box');
+  chart.setAttribute('series', [
+    {
+      name: 'sales',
+      data: [130, 40, 35, 50, 49, 60, 70, 91, 125]
+    }
+  ]
+  )
+  app.appendChild(chart);
 
   // Create the AI chat component
   const chatAI = createChatAI({
