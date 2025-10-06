@@ -262,9 +262,14 @@ export class Button {
   /**
    * Appends the button to a parent element
    * @param parent - The parent element to append to
+   * @returns The appended element or null if appending failed
    */
-  appendTo(parent: HTMLElement): void {
-    parent.appendChild(this.element);
+  appendTo(parent: HTMLElement): null | HTMLElement {
+    try{
+      return parent.appendChild(this.element);
+    } catch {
+      return null;
+    }
   }
 
   /**

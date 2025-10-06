@@ -1,0 +1,132 @@
+.cars-list {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 16px 0;
+  overflow: hidden;
+}
+
+.cars-list__header {
+  background: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 16px 20px;
+}
+
+.cars-list__title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333333;
+}
+
+.cars-list__content {
+  padding: 20px;
+}
+
+.cars-list__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.cars-list__loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.cars-list__loading p {
+  margin: 0;
+  color: #666666;
+  font-size: 0.9rem;
+}
+
+.cars-list__error {
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  padding: 16px;
+  text-align: center;
+}
+
+.cars-list__error-message {
+  margin: 0;
+  color: #721c24;
+  font-size: 0.9rem;
+}
+
+.cars-list__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cars-list__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s ease;
+}
+
+.cars-list__item:last-child {
+  border-bottom: none;
+}
+
+.cars-list__item:hover {
+  background-color: #f8f9fa;
+}
+
+.cars-list__item-id {
+  font-weight: 600;
+  color: #007bff;
+  font-size: 0.9rem;
+  min-width: 40px;
+}
+
+.cars-list__item-name {
+  flex: 1;
+  margin-left: 12px;
+  color: #333333;
+  font-size: 1rem;
+}
+
+.cars-list--empty {
+  text-align: center;
+  color: #666666;
+  font-style: italic;
+  padding: 40px 20px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .cars-list__content {
+    padding: 16px;
+  }
+  
+  .cars-list__header {
+    padding: 12px 16px;
+  }
+  
+  .cars-list__title {
+    font-size: 1.1rem;
+  }
+  
+  .cars-list__item {
+    padding: 10px 12px;
+  }
+}

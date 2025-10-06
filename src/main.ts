@@ -7,7 +7,9 @@ import './components/atoms/Button/Button.ts';
 import './components/atoms/Input/Input.ts';
 import './components/atoms/TextLog/TextLog.ts';
 import './components/molecules/userQuestionEntry/userQuestionEntry.ts';
+import './components/molecules/carsList/carsList.ts';
 import { createChatAI } from './components/organisms/chatAI/chatAI.ts';
+import { DBConnector } from './services/DBConnector/DBConnector.service.ts';
 
 const menuItems: MenuItem[] = [
   { label: 'Home', href: '#' },
@@ -36,6 +38,11 @@ if (app) {
   )
   app.appendChild(chart);
 
+  // Create the cars list component
+  const carsList = document.createElement('cars-list');
+  carsList.setAttribute('title', 'Available Cars');
+  app.appendChild(carsList);
+  
   // Create the AI chat component
   const chatAI = createChatAI({
     title: "AI Assistant",

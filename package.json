@@ -52,6 +52,7 @@
     }
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.74.0",
     "apexcharts": "^5.3.5",
     "openai": "^5.23.0"
   }
