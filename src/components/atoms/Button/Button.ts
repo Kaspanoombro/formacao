@@ -31,7 +31,7 @@ class CustomButton extends HTMLElement {
    * Defines which attributes should trigger attributeChangedCallback when modified
    * @returns Array of attribute names to observe
    */
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return ['text', 'disabled'];
   }
 
@@ -39,7 +39,7 @@ class CustomButton extends HTMLElement {
    * Lifecycle method called when the element is connected to the DOM
    * Loads the template and attaches event listeners
    */
-  connectedCallback() {
+  connectedCallback(): void {
     this.loadTemplate();
     this.attachEventListeners();
   }
@@ -48,7 +48,7 @@ class CustomButton extends HTMLElement {
    * Lifecycle method called when the element is disconnected from the DOM
    * Removes event listeners to prevent memory leaks
    */
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     this.removeEventListeners();
   }
 
@@ -57,7 +57,7 @@ class CustomButton extends HTMLElement {
    * Falls back to inline HTML if template loading fails
    * @private
    */
-  private loadTemplate() {
+  private loadTemplate(): void {
     try {
       // Inject CSS styles if not already injected
       if (!document.querySelector('style[data-component="custom-button"]')) {
@@ -102,7 +102,7 @@ class CustomButton extends HTMLElement {
    * Creates a fallback button element when template loading fails
    * @private
    */
-  private renderFallback() {
+  private renderFallback(): void {
     this.innerHTML = `
       <button class="custom-button" type="button">
         ${this.getAttribute('text') || ''}
@@ -125,7 +125,7 @@ class CustomButton extends HTMLElement {
    * Attaches click event listener to the button element
    * @private
    */
-  private attachEventListeners() {
+  private attachEventListeners(): void {
     if (this.buttonEl && this.clickHandler) {
       this.buttonEl.addEventListener('click', this.clickHandler);
     }
@@ -135,7 +135,7 @@ class CustomButton extends HTMLElement {
    * Removes click event listener from the button element
    * @private
    */
-  private removeEventListeners() {
+  private removeEventListeners(): void {
     if (this.buttonEl && this.clickHandler) {
       this.buttonEl.removeEventListener('click', this.clickHandler);
     }
@@ -148,7 +148,7 @@ class CustomButton extends HTMLElement {
    * @param _oldValue - The previous value (unused)
    * @param newValue - The new attribute value
    */
-  attributeChangedCallback(name: string, _oldValue: string, newValue: string) {
+  attributeChangedCallback(name: string, _oldValue: string | null, newValue: string | null): void {
     if (!this.buttonEl) return;
 
     switch (name) {
@@ -255,7 +255,7 @@ export class Button {
    * Gets the underlying HTML element
    * @returns The CustomButton element
    */
-  getElement(): HTMLElement {
+  getElement(): CustomButton {
     return this.element;
   }
 
